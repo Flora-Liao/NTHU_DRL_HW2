@@ -24,22 +24,16 @@ def process_observation(observation):
     transform = transforms.Compose([
         transforms.ToPILImage(),  # 將張量轉換為PIL圖像
         transforms.Grayscale(),   # 轉換為灰階
-        #transforms.Resize((64, 64)),  # 調整大小
-        #transforms.ToTensor(),    # 轉回張量
+        transforms.Resize((64, 64)),  # 調整大小
+        transforms.ToTensor(),    # 轉回張量
     ])
     
     # 應用轉換
     observation = transform(observation)
-    #reshape observation to (64,64)
-    observation = observation.resize((64, 64))
-    print(f'observation resize shape: {observation.shape}')
-    #change to tensor
-    observation = torch.tensor(observation, dtype=torch.float32)
-    print(f'observation tensor shape: {observation.shape}')
     
     # 增加一個批次大小維度和通道維度，使其形狀變為(1, 1, 256, 64)
     observation = observation.squeeze(0)
-    print(f'observation shape2: {observation.shape}')
+    #print(f'observation shape2: {observation.shape}')
     
     return observation #(64,64)
 
@@ -127,8 +121,11 @@ class Agent():
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         self.model = DuelingDQN(input_channels=1,action_size=self.action_size).to(self.device)
-        self.model.load_state_dict(torch.load("mario_model_600.pth", map_location=torch.device('cpu')))
-
+        self.model.load_state_dict(torch.load("mario_model_850.pth", map_location=torch.device('cpu')))
+        #self.model.eval() 
+        #self.target_model = DuelingDQN(input_channels=1,action_size=self.action_size).to(self.device)
+        #self.target_model.load_state_dict(self.model.state_dict())
+        #self.target_model.eval()
         self.loss_func = nn.MSELoss()
 
         self.optimizer = optim.Adam(self.model.parameters())
@@ -148,8 +145,8 @@ class Agent():
     def act(self, observation):
         state = observation
         #print(f'Observation shape: {state.shape}')
-        #if np.random.rand() <= 0.5:
-         #   return random.randrange(self.action_size)
+        if np.random.rand() <= 0.5:
+            return random.randrange(1,12)
         #print("Use model to choose action")
         state = update_state(observation)
         with torch.no_grad():
