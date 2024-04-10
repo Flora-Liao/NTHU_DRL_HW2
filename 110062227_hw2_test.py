@@ -8,18 +8,7 @@ import random
 from collections import deque
 import torch.nn.functional as F
 import numpy as np
-from nes_py.wrappers import JoypadSpace
-import gym_super_mario_bros
-from gym_super_mario_bros.actions import COMPLEX_MOVEMENT
-from tqdm import tqdm
-import matplotlib.pyplot as plt
-#import gymnasium as gym
-from gym.wrappers import GrayScaleObservation, FrameStack
 import torchvision.transforms as transforms
-import gym
-from torchvision import transforms as T
-from gym.spaces import Box
-from skimage import transform
 
 state_deque = deque(maxlen=4)
 for _ in range(4):
@@ -139,10 +128,7 @@ class Agent():
 
         self.model = DuelingDQN(input_channels=1,action_size=self.action_size).to(self.device)
         self.model.load_state_dict(torch.load("mario_model_600.pth", map_location=torch.device('cpu')))
-        #self.model.eval() 
-        #self.target_model = DuelingDQN(input_channels=1,action_size=self.action_size).to(self.device)
-        #self.target_model.load_state_dict(self.model.state_dict())
-        #self.target_model.eval()
+
         self.loss_func = nn.MSELoss()
 
         self.optimizer = optim.Adam(self.model.parameters())
@@ -172,25 +158,3 @@ class Agent():
             action_index = torch.argmax(Q, dim=1)
         return action_index.item()
     
-
-env = gym_super_mario_bros.make('SuperMarioBros-v0')
-env = JoypadSpace(env, COMPLEX_MOVEMENT)
-total_episodes = 10 #set to 50 when testing
-
-#testing mario agent
-agent = Agent()
-for episode in range(total_episodes):
-    state = env.reset()
-    #state = update_state(state, state_deque)
-    done = False
-    total_reward = 0
-    while not done:
-        env.render()
-        print(f'State shape: {state.shape}')
-        action = agent.act(state)
-        #print(f'Action: {action}')
-        next_state, reward, done, _ = env.step(action)
-        #next_state = update_state(next_state, state_deque)
-        total_reward += reward
-        state = next_state
-    print(f'Episode: {episode + 1}, Total Reward: {total_reward}')
