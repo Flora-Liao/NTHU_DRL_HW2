@@ -3,5 +3,4 @@ tqdm
 requests
 argparse
 numpy
-random
 torchvision
