@@ -146,16 +146,15 @@ class Agent():
         self.cur_state = []
 
     def act(self, observation):
-        return 1
         state = observation
         #print(f'Observation shape: {state.shape}')
-        if np.random.rand() <= 0.5:
-            return random.randrange(self.action_size)
+        #if np.random.rand() <= 0.5:
+         #   return random.randrange(self.action_size)
         #print("Use model to choose action")
         state = update_state(observation)
         with torch.no_grad():
             #print("Feed to model success")
             Q = self.model.forward(state)
             action_index = torch.argmax(Q, dim=1)
-        return action_index.item()
+        return 3
     
