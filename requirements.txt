@@ -6,3 +6,4 @@ collections
 deque
 numpy
 random
+torchvision
