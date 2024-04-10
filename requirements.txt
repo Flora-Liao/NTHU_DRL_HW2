@@ -2,3 +2,7 @@ torch
 tqdm
 requests
 argparse
+collections
+deque
+numpy
+random
