@@ -121,7 +121,7 @@ class Agent():
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         self.model = DuelingDQN(input_channels=1,action_size=self.action_size).to(self.device)
-        self.model.load_state_dict(torch.load("mario_model_850.pth", map_location=torch.device('cpu')))
+        self.model.load_state_dict(torch.load("mario_model_600.pth", map_location=torch.device('cpu')))
         #self.model.eval() 
         #self.target_model = DuelingDQN(input_channels=1,action_size=self.action_size).to(self.device)
         #self.target_model.load_state_dict(self.model.state_dict())
@@ -145,8 +145,8 @@ class Agent():
     def act(self, observation):
         state = observation
         #print(f'Observation shape: {state.shape}')
-        if np.random.rand() <= 0.5:
-            return random.randrange(1,12)
+        #if np.random.rand() <= 0:
+         #   return random.randrange(1,12)
         #print("Use model to choose action")
         state = update_state(observation)
         with torch.no_grad():
